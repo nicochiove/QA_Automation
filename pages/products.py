@@ -37,6 +37,15 @@ class ProductsPage:
         addToCart.click()
         return self
     
+    def agregar_producto_al_carrito_con_nombre(self):
+        addToCart = self.wait.until(EC.visibility_of_element_located(self._ADD_TO_CART))
+        addToCart.click()
+        
+        nombre_producto = self.wait.until(EC.visibility_of_element_located(self._INVENTORY_ITEM_NAME)).text
+
+        return nombre_producto
+
+    
     def buscar_cantidad_productos_en_carrito(self):
         cantidadProductos = self.wait.until(EC.visibility_of_element_located(self._CANTIDAD_PRODS_CARRITO)).text
         return int(cantidadProductos)

@@ -17,32 +17,38 @@ def test_redireccion_correcta_carrito(loginWithDriver):
     finally:
         driver.quit()
 
-def test_title_correcto(loginWithDriver):
+
+def test_existe_al_menos_un_producto_en_carrito(loginWithDriver):
     try:
         driver = loginWithDriver
 
-        assert driver.title == 'Swag Labs'
-    
+        ProductsPage(driver).agregar_producto_al_carrito()
+        ProductsPage(driver).navegar_a_carrito()
+        productoCarrito = CartPage(driver).buscar_producto_en_carrito()
+        
+        assert productoCarrito is not None, "Debería haber un al menos un Producto agregado al Carrito"
+
     except Exception as e:
-        print(f"Error en test_title_correcto: {e}")
+        print(f"Error en test_existe_al_menos_un_producto_en_carrito: {e}")
         raise
     finally:
         driver.quit()
 
-def test_existe_al_menos_un_producto(loginWithDriver):
+def test_producto_en_carrito_tiene_nombre_y_precio(loginWithDriver):
     try:
         driver = loginWithDriver
 
-        producto = ProductsPage(driver).buscar_productos_existentes()
-        nombre = ProductsPage(driver).buscar_nombre_producto()
-        precio = ProductsPage(driver).buscar_precio_producto()
-
-        assert producto is not None, "Debería existir al menos un Producto en el inventario"
-        assert nombre is not None, "Debería existir un Producto con su respectivo Nombre"
-        assert precio is not None, "Debería existir un Producto con su respectivo Precio"
+        nombreAgregado = ProductsPage(driver).agregar_producto_al_carrito_con_nombre()
+        ProductsPage(driver).navegar_a_carrito()
+        nombreCarrito = CartPage(driver).get_nombre_producto_en_carrito()
+        precioProducto = CartPage(driver).get_precio_producto_en_carrito()
+        
+        assert nombreCarrito is not None, "El producto debería tener un nombre"
+        assert nombreCarrito == nombreAgregado, "El producto en el carrito no es el mismo que se añadió"
+        assert precioProducto is not None, "El producto debería tener un precio"
 
     except Exception as e:
-        print(f"Error en test_existe_al_menos_un_producto: {e}")
+        print(f"Error en test_producto_en_carrito_tiene_nombre_y_precio: {e}")
         raise
     finally:
         driver.quit()
